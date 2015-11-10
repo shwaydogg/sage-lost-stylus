@@ -8,7 +8,7 @@ This approach is actually quite versatile: because PostCSS transformations occur
 
 
 ## TO-DO
-- [ ] Figure out a solution for source maps.
+- [ ] Figure out a solution for the [source maps issue](https://github.com/oompt/sage-lost-stylus/issues/1).
 
 &nbsp;
 
