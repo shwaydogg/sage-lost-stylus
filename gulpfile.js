@@ -19,7 +19,9 @@ var runSequence  = require('run-sequence');
 var sass         = require('gulp-sass');
 var sourcemaps   = require('gulp-sourcemaps');
 var uglify       = require('gulp-uglify');
-
+var postcss      = require('gulp-postcss');
+var stylus       = require('gulp-stylus');
+var lost         = require('lost');
 // See https://github.com/austinpray/asset-builder
 var manifest = require('asset-builder')('./assets/manifest.json');
 
@@ -86,6 +88,9 @@ var cssTasks = function(filename) {
       return gulpif(enabled.maps, sourcemaps.init());
     })
     .pipe(function() {
+      return gulpif('*.styl', stylus());
+    })
+    .pipe(function() {
       return gulpif('*.less', less());
     })
     .pipe(function() {
@@ -111,11 +116,12 @@ var cssTasks = function(filename) {
     .pipe(function() {
       return gulpif(enabled.rev, rev());
     })
-    .pipe(function() {
-      return gulpif(enabled.maps, sourcemaps.write('.', {
-        sourceRoot: 'assets/styles/'
-      }));
-    })();
+    // .pipe(function() {
+    //   return gulpif(enabled.maps, sourcemaps.write('.', {
+    //     sourceRoot: 'assets/styles/'
+    //   }));
+    // })
+    ();
 };
 
 // ### JS processing pipeline
@@ -127,9 +133,9 @@ var cssTasks = function(filename) {
 // ```
 var jsTasks = function(filename) {
   return lazypipe()
-    .pipe(function() {
-      return gulpif(enabled.maps, sourcemaps.init());
-    })
+    // .pipe(function() {
+    //   return gulpif(enabled.maps, sourcemaps.init());
+    // })
     .pipe(concat, filename)
     .pipe(uglify, {
       compress: {
@@ -139,11 +145,12 @@ var jsTasks = function(filename) {
     .pipe(function() {
       return gulpif(enabled.rev, rev());
     })
-    .pipe(function() {
-      return gulpif(enabled.maps, sourcemaps.write('.', {
-        sourceRoot: 'assets/scripts/'
-      }));
-    })();
+    // .pipe(function() {
+    //   return gulpif(enabled.maps, sourcemaps.write('.', {
+    //     sourceRoot: 'assets/scripts/'
+    //   }));
+    // })
+     ();
 };
 
 // ### Write to rev manifest
@@ -181,6 +188,12 @@ gulp.task('styles', ['wiredep'], function() {
       .pipe(cssTasksInstance));
   });
   return merged
+  // PostCSS is placed here (and not above in a gulpif function) because we're
+  // processing raw .css, so the transformation occurs after the others.
+  // This means that you can write your Lost in any precompiled language, which is
+  // awesome.
+  // Reference: https://github.com/corysimmons/lost/tree/gh-pages/src
+    .pipe(postcss([lost()]))
     .pipe(writeToManifest('styles'));
 });
 
