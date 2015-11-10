@@ -1,13 +1,11 @@
 {
-  "name": "sage",
-  "homepage": "https://roots.io/sage/",
+  "name": "sage-lost-stylus",
+  "homepage": "https://github.com/oompt/sage-lost-stylus",
   "authors": [
-    "Ben Word <ben@benword.com>"
+    "Ben Word <matt@oompt.me>"
   ],
   "license": "MIT",
   "private": true,
-  "dependencies": {
-
-  },
+  "dependencies": { },
   "overrides": {}
 }
