@@ -1,12 +1,15 @@
+Sage &mdash; with the Lost Grid System and Stylus
+
 This is a Stylus/Lost Grid port of Root's Sage (WP Starter theme).
 
-The default Sass project scaffold has been replaced with a Stylus project structure, and Gulpfile.js has been adapted to allow for Stylus and PostCSS pre-and post-processing (respectively).
+I completedly removed the Sass Bootstrap project scaffold and replaced it with a general Stylus project structure. Additionally, Gulpfile.js has been adapted to allow for Stylus, and the Lost Grid (PostCSS).
 
-This approach is actually quite versatile because PostCSS transformations occur *after* your Stylus/Less/Sass files have been converted to vanilla CSS, it means you have the choice of using any language you want, or even a combination, with the [Lost Grid](https://github.com/corysimmons/lost).
+This approach is actually quite versatile because PostCSS transformations occur *after* your Stylus/Less/Sass files have been converted to vanilla CSS, it means you have the choice of using any language you want, or even a combination, with the [Lost Grid](https://github.com/corysimmons/lost). I favour Stylus, but you could just as easily write in Sass or Less and still take advantage of one of the best CSS grids going right now.
 
 
 ## TO-DO
-[ ] Figure out a solution for source maps.
+- [ ] Figure out a solution for source maps.
+
 
 The original README follows below
 
