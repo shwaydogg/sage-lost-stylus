@@ -116,11 +116,15 @@ var cssTasks = function(filename) {
     .pipe(function() {
       return gulpif(enabled.rev, rev());
     })
+
+    // Turning off source maps, as they are breaking PostCSS compile.
+
     // .pipe(function() {
     //   return gulpif(enabled.maps, sourcemaps.write('.', {
     //     sourceRoot: 'assets/styles/'
     //   }));
     // })
+
     ();
 };
 
@@ -133,9 +137,9 @@ var cssTasks = function(filename) {
 // ```
 var jsTasks = function(filename) {
   return lazypipe()
-    // .pipe(function() {
-    //   return gulpif(enabled.maps, sourcemaps.init());
-    // })
+    .pipe(function() {
+      return gulpif(enabled.maps, sourcemaps.init());
+    })
     .pipe(concat, filename)
     .pipe(uglify, {
       compress: {
@@ -145,12 +149,11 @@ var jsTasks = function(filename) {
     .pipe(function() {
       return gulpif(enabled.rev, rev());
     })
-    // .pipe(function() {
-    //   return gulpif(enabled.maps, sourcemaps.write('.', {
-    //     sourceRoot: 'assets/scripts/'
-    //   }));
-    // })
-     ();
+    .pipe(function() {
+      return gulpif(enabled.maps, sourcemaps.write('.', {
+        sourceRoot: 'assets/scripts/'
+      }));
+    })();
 };
 
 // ### Write to rev manifest
