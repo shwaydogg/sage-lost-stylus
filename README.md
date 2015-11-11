@@ -5,7 +5,7 @@
 If you haven't, meet the [Lost Grid](https://github.com/corysimmons/lost). (PostCSS) <br>
 You've maybe heard of [Stylus](https://learnboost.github.io/stylus/).
 
-Specifically, I did two things: 
+Specifically, I did three things: 
 
   1. Completedly removed the default Sass Bootstrap project scaffold and replaced it with a general Stylus project structure.
   2. Added Stylus functionality to the Gulp ``styles`` task.
