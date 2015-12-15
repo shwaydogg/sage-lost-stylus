@@ -23,7 +23,6 @@ var postcss      = require('gulp-postcss');
 var stylus       = require('gulp-stylus');
 var lost         = require('lost');
 var rucksack     = require('rucksack-css')
-var csswring     = require('csswring')
 // See https://github.com/austinpray/asset-builder
 var manifest = require('asset-builder')('./assets/manifest.json');
 
