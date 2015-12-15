@@ -1,21 +1,11 @@
-# Sage, a WP Starter Theme 
+# Sage, a WP Starter Theme
 ### Now With Stylus and Lost!
 
 
 If you haven't, meet the [Lost Grid](https://github.com/corysimmons/lost). (PostCSS) <br>
 You've maybe heard of [Stylus](https://learnboost.github.io/stylus/).
 
-Specifically, I did three things: 
-
-  1. Completedly removed the default Sass Bootstrap project scaffold and replaced it with a general Stylus project structure.
-  2. Added Stylus functionality to the Gulp ``styles`` task.
-  3. Intergrated Lost into Gulp.
-  
-It's worth noting that PostCSS transformations occur *after* your Stylus/Less/Sass files have been converted to vanilla CSS. That means you have the choice of using any language you want, or even a combination, with PostCSS tools. Pretty sweet.
-
-
-## TO-DO
-- [ ] Figure out a solution for the [source maps issue](https://github.com/oompt/sage-lost-stylus/issues/1).
+This Sage fork enables the use of Stylus, the Lost grid, and Rucksack. You can easily add other PostCSS plugins too.
 
 &nbsp;
 
@@ -97,9 +87,9 @@ You now have all the necessary dependencies to run the build process.
 
 ### Available gulp commands
 
-* `gulp` â€” Compile and optimize the files in your assets directory
-* `gulp watch` â€” Compile assets when file changes are made
-* `gulp --production` â€” Compile assets for production (no source maps).
+* `gulp` — Compile and optimize the files in your assets directory
+* `gulp watch` — Compile assets when file changes are made
+* `gulp --production` — Compile assets for production (no source maps).
 
 ### Using BrowserSync
 
