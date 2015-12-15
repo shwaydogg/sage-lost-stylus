@@ -1,6 +1,6 @@
 // ## Globals
 var argv         = require('minimist')(process.argv.slice(2));
-var autoprefixer = require('gulp-autoprefixer');
+var autoprefixer = require('autoprefixer');
 var browserSync  = require('browser-sync').create();
 var changed      = require('gulp-changed');
 var concat       = require('gulp-concat');
@@ -22,6 +22,8 @@ var uglify       = require('gulp-uglify');
 var postcss      = require('gulp-postcss');
 var stylus       = require('gulp-stylus');
 var lost         = require('lost');
+var rucksack     = require('rucksack-css')
+var csswring     = require('csswring')
 // See https://github.com/austinpray/asset-builder
 var manifest = require('asset-builder')('./assets/manifest.json');
 
@@ -73,68 +75,23 @@ var revManifest = path.dist + 'assets.json';
 // See https://github.com/OverZealous/lazypipe
 
 // ### CSS processing pipeline
-// Example
-// ```
-// gulp.src(cssFiles)
-//   .pipe(cssTasks('main.css')
-//   .pipe(gulp.dest(path.dist + 'styles'))
-// ```
 var cssTasks = function(filename) {
   return lazypipe()
     .pipe(function() {
       return gulpif(!enabled.failStyleTask, plumber());
     })
     .pipe(function() {
-      return gulpif(enabled.maps, sourcemaps.init());
-    })
-    .pipe(function() {
-      return gulpif('*.styl', stylus());
-    })
-    .pipe(function() {
-      return gulpif('*.less', less());
-    })
-    .pipe(function() {
-      return gulpif('*.scss', sass({
-        outputStyle: 'nested', // libsass doesn't support expanded yet
-        precision: 10,
-        includePaths: ['.'],
-        errLogToConsole: !enabled.failStyleTask
-      }));
+      return gulpif('*.styl', stylus( { 'include css': true } ));
     })
     .pipe(concat, filename)
-    .pipe(autoprefixer, {
-      browsers: [
-        'last 2 versions',
-        'android 4',
-        'opera 12'
-      ]
-    })
-    .pipe(minifyCss, {
-      advanced: false,
-      rebase: false
-    })
+    // Use Asset Hashing
     .pipe(function() {
       return gulpif(enabled.rev, rev());
-    })
+    })();
 
-    // Turning off source maps, as they are breaking PostCSS compile.
-
-    // .pipe(function() {
-    //   return gulpif(enabled.maps, sourcemaps.write('.', {
-    //     sourceRoot: 'assets/styles/'
-    //   }));
-    // })
-
-    ();
 };
 
 // ### JS processing pipeline
-// Example
-// ```
-// gulp.src(jsFiles)
-//   .pipe(jsTasks('main.js')
-//   .pipe(gulp.dest(path.dist + 'scripts'))
-// ```
 var jsTasks = function(filename) {
   return lazypipe()
     .pipe(function() {
@@ -146,14 +103,11 @@ var jsTasks = function(filename) {
         'drop_debugger': enabled.stripJSDebug
       }
     })
+    // Use Asset Hashing
     .pipe(function() {
       return gulpif(enabled.rev, rev());
-    })
-    .pipe(function() {
-      return gulpif(enabled.maps, sourcemaps.write('.', {
-        sourceRoot: 'assets/scripts/'
-      }));
     })();
+
 };
 
 // ### Write to rev manifest
@@ -170,14 +124,26 @@ var writeToManifest = function(directory) {
     .pipe(gulp.dest, path.dist)();
 };
 
+
 // ## Gulp tasks
 // Run `gulp -T` for a task summary
+
+
+// Generate Sourcemaps for Main Stylus File
+gulp.task('sourcemaps', function () {
+  gulp.src('./assets/styles/main.styl')
+    .pipe(sourcemaps.init())
+    .pipe(stylus())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('./dist/styles/'));
+});
+
 
 // ### Styles
 // `gulp styles` - Compiles, combines, and optimizes Bower CSS and project CSS.
 // By default this task will only log a warning if a precompiler error is
 // raised. If the `--production` flag is set: this task will fail outright.
-gulp.task('styles', ['wiredep'], function() {
+gulp.task('styles', ['wiredep', 'sourcemaps'], function() {
   var merged = merge();
   manifest.forEachDependency('css', function(dep) {
     var cssTasksInstance = cssTasks(dep.name);
@@ -191,13 +157,20 @@ gulp.task('styles', ['wiredep'], function() {
       .pipe(cssTasksInstance));
   });
   return merged
-  // PostCSS is placed here (and not above in a gulpif function) because we're
-  // processing raw .css, so the transformation occurs after the others.
-  // This means that you can write your Lost in any precompiled language, which is
-  // awesome.
-  // Reference: https://github.com/corysimmons/lost/tree/gh-pages/src
-    .pipe(postcss([lost()]))
-    .pipe(writeToManifest('styles'));
+
+
+  /* PostCSS */
+
+  /*
+    This code block is placed here (and not above in a gulpif function) because we're
+    processing raw .css, so the transformation occurs after everything else.
+
+    Reference: https://github.com/corysimmons/lost/tree/gh-pages/src
+  */
+  .pipe(postcss([ lost(), rucksack(), autoprefixer({ browsers: ['last 3 versions'] }), csswring() ]))
+  .pipe(writeToManifest('styles'));
+
+
 });
 
 // ### Scripts
