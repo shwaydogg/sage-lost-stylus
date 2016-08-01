@@ -6,6 +6,15 @@
   ],
   "license": "MIT",
   "private": true,
-  "dependencies": { },
-  "overrides": {}
+  "dependencies": {
+    "materialize": "^0.97.7"
+  },
+  "overrides": {
+    "materialize": {
+      "main": [
+        "./css/materialize.css",
+        "./js/materialize.js"
+      ]
+    }
+  }
 }
